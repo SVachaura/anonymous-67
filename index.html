@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>anonymous</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#000;--white:#fff;--border:2px solid #000}
+body{background:#fff;color:#000;font-family:Inter,"SF Pro Display",Roboto,Arial,sans-serif;text-transform:lowercase}
+button,input{font:inherit;color:#000;background:#fff;border:var(--border);border-radius:0;outline:none;text-transform:lowercase}
+button{cursor:pointer}button:active{background:#000;color:#fff}input:focus{box-shadow:inset 0 0 0 1px #000}
+.screens{width:100%;max-width:1500px;margin:0 auto;padding:30px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.screen{min-height:700px;border:var(--border);background:#fff;display:flex;flex-direction:column;overflow:hidden}
+.screen-title{text-align:center;font-size:20px;font-weight:700;padding:22px 16px;border-bottom:var(--border)}
+.navigation{padding:20px}.nav-header{display:grid;grid-template-columns:1fr 54px;gap:10px;align-items:start}
+.search{width:100%;height:54px;padding:0 16px;font-size:16px}.add-area{display:flex;flex-direction:column;gap:8px}
+.add-button{width:54px;height:54px;font-size:28px;line-height:1}.small-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:absolute;margin-top:62px;margin-left:-65px;width:150px}
+.small-button{height:38px;font-size:13px}.nav-content{margin-top:80px}.section{margin-bottom:30px}
+.section-title{font-size:18px;font-weight:700;margin-bottom:10px}.room{width:100%;min-height:62px;border:var(--border);display:flex;align-items:center;padding:14px;font-size:16px;margin-bottom:10px;cursor:pointer}
+.room:hover{background:#000;color:#fff}
+.chat-content{padding:20px;flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.messages{display:flex;flex-direction:column;gap:12px;flex:1}
+.message{width:100%;min-height:58px;border:var(--border);padding:16px;display:flex;align-items:center;font-size:15px;line-height:1.4;word-break:break-word}
+.message-time{font-size:10px;margin-left:auto;padding-left:10px;opacity:.5;white-space:nowrap}
+.chat-input-area{display:grid;grid-template-columns:1fr 110px;gap:10px;margin-top:15px}
+.message-input{width:100%;min-height:50px;padding:12px}.send-button{min-height:50px;font-weight:700}
+.admin-content{padding:20px;flex:1}.admin-list{display:flex;flex-direction:column;gap:12px}
+.admin-item{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:stretch}.admin-object{min-height:56px;border:var(--border);padding:14px;display:flex;align-items:center;font-size:14px}
+.admin-actions{display:flex;gap:8px}.action-button{min-width:82px;padding:0 12px;font-size:13px;border:var(--border)}
+@media(max-width:1000px){.screens{grid-template-columns:1fr;max-width:650px}.screen{min-height:650px}}
+@media(max-width:500px){.screens{padding:12px;gap:18px}.screen{min-height:600px}.navigation,.chat-content,.admin-content{padding:14px}.screen-title{font-size:18px;padding:18px 12px}.nav-header{grid-template-columns:1fr 48px}
+.search{height:48px;font-size:14px}.add-button{width:48px;height:48px;font-size:24px}.small-buttons{margin-top:56px;margin-left:-58px;width:135px}.small-button{height:34px;font-size:12px}
+.nav-content{margin-top:70px}.section-title{font-size:16px}.room{min-height:54px;font-size:14px}.message{min-height:52px;padding:13px;font-size:14px}
+.chat-input-area{grid-template-columns:1fr 85px;gap:7px}.message-input,.send-button{min-height:46px}.admin-item{grid-template-columns:1fr}.admin-actions{display:grid;grid-template-columns:1fr 1fr}.action-button{min-height:44px}}
+</style>
+</head>
+<body>
+<main class="screens">
+<section class="screen">
+<div class="screen-title">anonymous</div>
+<div class="navigation">
+<header class="nav-header">
+<input class="search" type="text" placeholder="поиск" aria-label="поиск">
+<div class="add-area">
+<button class="add-button" aria-label="добавить">+</button>
+<div class="small-buttons"><button class="small-button">чат</button><button class="small-button">канал</button></div>
+</div>
+</header>
+<div class="nav-content">
+<section class="section"><h2 class="section-title">чаты</h2><div class="room">чат канал</div><div class="room">чат канал</div></section>
+<section class="section"><h2 class="section-title">каналы</h2><div class="room">чат канал</div><div class="room">чат канал</div></section>
+</div>
+</div>
+</section>
+
+<section class="screen">
+<div class="screen-title">название чата</div>
+<div class="chat-content">
+<div class="messages" id="messages"></div>
+<div class="chat-input-area">
+<input id="messageInput" class="message-input" type="text" placeholder="сообщение" maxlength="500" autocomplete="off">
+<button id="sendButton" class="send-button">отправить</button>
+</div>
+</div>
+</section>
+
+<section class="screen">
+<div class="screen-title">панель управления</div>
+<div class="admin-content">
+<div class="admin-list">
+<div class="admin-item"><div class="admin-object">чат канал</div><div class="admin-actions"><button class="action-button">удалить</button><button class="action-button">бан</button></div></div>
+<div class="admin-item"><div class="admin-object">сообщение</div><div class="admin-actions"><button class="action-button">удалить</button><button class="action-button">бан</button></div></div>
+</div>
+</div>
+</section>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCoPrsD5RmDmBbmejYIaqePrrphaq_7UhU",
+  authDomain: "anonymous-67.firebaseapp.com",
+  databaseURL: "https://anonymous-67-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "anonymous-67",
+  storageBucket: "anonymous-67.firebasestorage.app",
+  messagingSenderId: "892000383172",
+  appId: "1:892000383172:web:05b166d1541c669844d991",
+  measurementId: "G-4NVQ5P6PM4"
+};
+
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+const messagesElement = document.getElementById("messages");
+const messageInput = document.getElementById("messageInput");
+const sendButton = document.getElementById("sendButton");
+const messagesRef = ref(database, "messages");
+
+async function sendMessage() {
+  const text = messageInput.value.trim();
+  if (!text || text.length > 500) return;
+  try {
+    await push(messagesRef, { text, timestamp: Date.now() });
+    messageInput.value = "";
+    messageInput.focus();
+  } catch (error) {
+    console.error("Ошибка отправки:", error);
+    alert("не удалось отправить сообщение");
+  }
+}
+
+sendButton.addEventListener("click", sendMessage);
+
+messageInput.addEventListener("keydown", event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    sendMessage();
+  }
+});
+
+onChildAdded(messagesRef, snapshot => {
+  const data = snapshot.val();
+  if (!data || typeof data.text !== "string") return;
+
+  const message = document.createElement("div");
+  message.className = "message";
+
+  const text = document.createElement("span");
+  text.textContent = data.text;
+
+  const time = document.createElement("span");
+  time.className = "message-time";
+
+  if (data.timestamp) {
+    time.textContent = new Date(data.timestamp).toLocaleTimeString("ru-RU", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  message.appendChild(text);
+  message.appendChild(time);
+  messagesElement.appendChild(message);
+
+  const chatContent = messagesElement.parentElement;
+  chatContent.scrollTop = chatContent.scrollHeight;
+}, error => {
+  console.error("Firebase error:", error);
+  messagesElement.innerHTML = "";
+  const errorMessage = document.createElement("div");
+  errorMessage.className = "message";
+  errorMessage.textContent = "ошибка подключения к базе";
+  messagesElement.appendChild(errorMessage);
+});
+</script>
+</body>
+</html>
